@@ -1,0 +1,155 @@
+.node
+{
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid #52616B;
+}
+
+.node-start {
+    background-color: rgb(233, 30, 30);
+}
+
+.node-finish {
+    background-color: rgb(141, 243, 82);
+}
+
+.node-wall {
+    border: 1px solid #F08A5D;
+    background-color: #F08A5D;
+}
+
+.node-weight {
+    background-color: #F67280;
+}
+
+.node-visited {
+    animation-name: visitedAnimation;
+    animation-duration: 1.2s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+@keyframes visitedAnimation {
+    0%
+    {
+        background-color: #DEFCF9;
+    }
+
+    50%
+    {
+        background-color: #CADEFC;
+    }
+
+    75%
+    {
+        background-color: #C3BEF0;
+    }
+
+    100%
+    {
+        background-color: #CCA8E9;
+    }
+}
+
+.node-visitedWeight {
+    animation-name: visitedWeightAnimation;
+    animation-duration: 1.5s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+
+    animation-fill-mode: forwards;
+}
+
+@keyframes visitedWeightAnimation
+{
+    0%
+    {
+        background-color: #E3CDC1;
+    }
+
+    50%
+    {
+        background-color: #F6E6CB;
+    }
+
+    75%
+    {
+        background-color: #E7D4B5;
+    }
+
+    100%
+    {
+        opacity: .75;
+        background-color: #EABF9F;
+    }
+}
+
+.node-path
+{
+    animation-name: shortestPathAnimation;
+    animation-duration: 1.5s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+
+    animation-fill-mode: forwards;
+}
+@keyframes shortestPathAnimation
+{
+    0%
+    {
+        background-color: #A1EAFB;
+    }
+
+    60%
+    {
+        background-color: #FFCEF3;
+    }
+
+    100%
+    {
+        background-color: #CABBE9;
+    }
+}
+
+.node-path-weight
+{
+    animation-name: shortestPathAnimationWeight;
+    animation-duration: 1.5s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+
+    animation-fill-mode: forwards;
+}
+
+@keyframes shortestPathAnimationWeight
+{
+    0%
+    {
+        background-color: #EABF9F;
+    }
+
+    60%
+    {
+        background-color: #E7D4B5;
+    }
+
+    100%
+    {
+        opacity: .75;
+        background-color: #F5C6AA;
+    }
+}

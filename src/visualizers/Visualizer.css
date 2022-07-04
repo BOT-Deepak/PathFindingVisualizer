@@ -1,0 +1,131 @@
+
+* {
+    font-family: "McLaren", cursive;
+}
+
+.visualizerTopBox {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.visualizerTopBox .container {
+    min-width: 100%;
+    max-width: 100%;
+    padding: auto;
+
+    color: blueviolet;
+    background-color: #BBDED6;
+    border-radius: 10px;
+}
+
+.visualizerTopBox .container .heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.visualizerTopBox .container .heading h2 {
+    cursor: pointer;
+}
+
+.centreBox {
+    line-height: 20px;
+    text-align: left;
+    padding: 10px 20px 10px;
+    justify-content: space-around;
+}
+
+.centreBox .algoRouter {
+    position: absolute;
+    right: 20%;
+}
+
+.weightSection {
+    position: absolute;
+    right: 5%;;
+}
+
+.weightSection input {
+    height: 25px;
+    text-align: center;
+    color: blueviolet;
+    background-color: transparent;
+}
+
+.weightSection button {
+    font-size: 12px;
+    position: relative;
+    margin-left: 10px;
+    padding: 10px 10px;
+    color: #fff;
+    border-color: #48c9b0;
+    border-radius: 70%;
+    background-color: #48c9b0;
+}
+
+.startPoints input, .endPoints input {
+    margin-right: 20px;
+    height: 25px;
+    text-align: center;
+    color: blueviolet;
+    background-color: transparent;
+}
+
+.centreBox .endPointContainer {
+    font-weight: 500;
+}
+
+.startButtonSection {
+    text-align: center;
+}
+
+.startButton {
+    font-size: 18px;
+    position: relative;
+    text-align: center;
+    margin: 2px 10px 2px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition-duration: .8s;
+
+    color: brown;
+    border-color: brown;
+    border-radius: 5px;
+    background-color: #48c9b0;
+}
+
+.startButton:hover {
+    background-color: #87dfcc;
+}
+
+.resetButton {
+    font-size: 24px;
+    position: relative;
+    text-align: center;
+    font-weight: bold;
+    width: 500px;
+    left: 36%;
+    padding: 10px 50px 10px;
+
+    cursor: pointer;
+    transition-duration: .8s;
+
+    color: brown;
+    border-color: brown;
+    border-radius: 5px;
+    background-color: #48c9b0;
+}
+
+.visualGridContainer .gridBox {
+    margin-top: 20px;
+    background-color: #FAE3D9;
+
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+label {
+    font-size: 20px;
+    padding: 10px 10px 20px;
+    color: darkorange;
+}

@@ -1,0 +1,24 @@
+.App {
+  text-align: center;
+}
+
+.navbar {
+  margin: 10px 50px 10px;
+  background-color: #61C0BF;
+  border-radius: 10px;
+}
+
+.webName {
+  margin-left: 20px;
+  font-family: "McLaren", cursive;
+}
+
+.webBars {
+  position: absolute;
+  right: 2%;
+  font-family: "McLaren", cursive;
+}
+
+.bar {
+  margin-right: 40px;
+}
