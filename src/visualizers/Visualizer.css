@@ -3,79 +3,68 @@
     font-family: "McLaren", cursive;
 }
 
-.visualizerTopBox {
-    margin-left: 50px;
-    margin-right: 50px;
+label {
+    font-size: 20px;
+    padding: 10px 10px 20px;
 }
 
-.visualizerTopBox .container {
-    min-width: 100%;
-    max-width: 100%;
-    padding: auto;
-
-    color: blueviolet;
-    background-color: #BBDED6;
-    border-radius: 10px;
+.visualizerBox .container {
+    position: absolute;
+    width: 20%;
+    margin-top: 30px;
 }
 
-.visualizerTopBox .container .heading {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-.visualizerTopBox .container .heading h2 {
+.visualizerBox .container .heading {
+    padding-left: 5px;
+    padding-bottom: 10px;
+    font-size: 1.7rem;
+    text-align: center;
     cursor: pointer;
 }
 
 .centreBox {
-    line-height: 20px;
-    text-align: left;
-    padding: 10px 20px 10px;
+    line-height: 10px;
+    padding: 0 20px 0;
     justify-content: space-around;
 }
 
-.centreBox .algoRouter {
-    position: absolute;
-    right: 20%;
-}
-
-.weightSection {
-    position: absolute;
-    right: 5%;;
-}
-
 .weightSection input {
-    height: 25px;
+    height: 29px;
     text-align: center;
-    color: blueviolet;
-    background-color: transparent;
 }
 
-.weightSection button {
-    font-size: 12px;
-    position: relative;
-    margin-left: 10px;
+.weightSection button, .flagSection button {
+    font-size: 14px;
+    margin-left: 6px;
     padding: 10px 10px;
-    color: #fff;
-    border-color: #48c9b0;
-    border-radius: 70%;
-    background-color: #48c9b0;
+    border-radius: 30%;
+}
+
+.startPoints, .weightSection, .algoChangeSection, .startButtonSection, .detailsContainer, .flagSection {
+    padding-top: 20px;
+}
+
+.startPoints, .algoChangeSection, .detailsContainer {
+    padding-bottom: 20px;
+}
+
+.detailsContainer label {
+    font-size: 2rem;
+}
+
+.setWeightContainer, .setAlgoContainer {
+    padding-top: 10px;
+}
+
+.setAlgoContainer {
+    padding-left: 10px;
 }
 
 .startPoints input, .endPoints input {
-    margin-right: 20px;
-    height: 25px;
+    margin-right: 11px;
+    height: 29px;
     text-align: center;
-    color: blueviolet;
-    background-color: transparent;
-}
-
-.centreBox .endPointContainer {
-    font-weight: 500;
-}
-
-.startButtonSection {
-    text-align: center;
+    border-radius: 30%;
 }
 
 .startButton {
@@ -86,46 +75,29 @@
     font-weight: bold;
 
     cursor: pointer;
-    transition-duration: .8s;
-
-    color: brown;
-    border-color: brown;
-    border-radius: 5px;
-    background-color: #48c9b0;
-}
-
-.startButton:hover {
-    background-color: #87dfcc;
+    transition-duration: .2s;
+    border-radius: 8px;
 }
 
 .resetButton {
-    font-size: 24px;
+    font-size: 18px;
     position: relative;
     text-align: center;
     font-weight: bold;
-    width: 500px;
-    left: 36%;
     padding: 10px 50px 10px;
 
     cursor: pointer;
-    transition-duration: .8s;
-
-    color: brown;
-    border-color: brown;
-    border-radius: 5px;
-    background-color: #48c9b0;
+    transition-duration: .2s;
+    border-radius: 8px;
 }
 
 .visualGridContainer .gridBox {
-    margin-top: 20px;
-    background-color: #FAE3D9;
+    margin-top: 10px;
+    margin-left: 23%;
 
-    border: 2px solid black;
-    border-radius: 10px;
+    border: 1px solid #959fa5;
 }
 
-label {
-    font-size: 20px;
-    padding: 10px 10px 20px;
-    color: darkorange;
+.arrowClass {
+    background-image: url("../images/helloSand.jpg");
 }

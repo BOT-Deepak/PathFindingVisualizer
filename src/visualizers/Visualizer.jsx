@@ -1,31 +1,35 @@
 import React, { Component } from "react";
 import Node from "../components/Node";
-import { startEndPoint } from "./startEndPoint";
-import { dijkstra, getShortestPathNodes } from "../algorithms/dijkstra";
-import { bfs, getShortestPathNodesBFS } from "../algorithms/bfs";
-import { bidirectional, getShortestPathNodesBD } from "../algorithms/bidirectional";
-import { bellmanford, getShortestPathNodesBF } from "../algorithms/bellmanford";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCirclePlay } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'jquery/dist/jquery.min.js'
 import $ from "jquery";
 import "./Visualizer.css";
 
+import { startEndPoint } from "./startEndPoint";
+import dijkstra from "../algorithms/dijkstra";
+import { getShortestPathNodes, getShortestPathNodesBD } from "../algorithms/multiUseFunctions";
+import bfs from "../algorithms/bfs";
+import bidirectional from "../algorithms/bidirectional";
+import bellmanford from "../algorithms/bellmanford";
+
 const pos = startEndPoint();
 
 const getGridInitial = () => {
-
+  
   const grid = [];
+
   for (let row = 0; row < pos.rowMax; row++) {
 
     const currentRow = [];
-    for (let col = 0; col < pos.colMax; col++) {
-      currentRow.push(createNode(row, col));
-    }
+    for (let col = 0; col < pos.colMax; col++) currentRow.push(createNode(row, col));
     grid.push(currentRow);
   }
+
   return grid;
 };
 
@@ -36,25 +40,41 @@ const createNode = (row, col) => {
     isStart: row === pos.startRow && col === pos.startCol,
     isFinish: row === pos.finishRow && col === pos.finishCol,
     distance: Infinity,
-    isVisitedS: false, isVisitedE: false,
-    isWall: false, isWeight: false, previousNode: null, nextNode: null, weight: 0,};
+    isVisitedS: false, isVisitedE: false, isVisitedF: false,
+    isWall: false, isWeight: false, previousNode: null, nextNode: null, weight: 0, isFlag: false,
+  };
 };
 
 const getWallGrid = (grid, row, col) => {
+
   const newGrid = [...grid];
   const node = newGrid[row][col];
-  const newNode = {...node, isWall: !node.isWall,};
 
+  const newNode = {...node, isWall: !node.isWall,};
   newGrid[row][col] = newNode;
+
+  return newGrid;
+};
+
+const getFlagGrid = (grid, row, col) => {
+
+  const newGrid = [...grid];
+  const node = newGrid[row][col];
+  
+  const newNode = {...node, isFlag: !node.isFlag,};
+  newGrid[row][col] = newNode;
+
   return newGrid;
 };
 
 const getWeightedGrid = (grid, row, col, weight) => {
+
   const newGrid = [...grid]; 
   const node = newGrid[row][col];
+  
   const newNode = {...node, isWeight: !node.isWeight, weight: parseInt(weight),};
-
   newGrid[row][col] = newNode;
+  
   return newGrid;
 };
 
@@ -67,7 +87,7 @@ export default class Visualizer extends Component {
     this.state = {
       grid: [], mouseIsPressed: false,
       topMessage: "Dijkstra Algorithm", buttonText: "Dijkstra Algorithm",
-      weight: 1, changeWeight: false, distanceToBeTraveled: 0,
+      weight: 1, changeWeight: false, distanceToBeTraveled: 0, changeFlag: false,
     };
   }
 
@@ -87,13 +107,14 @@ export default class Visualizer extends Component {
     let newGrid = [];
 
     if (this.state.changeWeight) newGrid = getWeightedGrid(this.state.grid, row, col, this.state.weight);
+    else if(this.state.changeFlag) newGrid = getFlagGrid(this.state.grid, row, col);
     else newGrid = getWallGrid(this.state.grid, row, col);
 
     this.setState({ grid: newGrid, mouseIsPressed: true });
   }
 
   handleMousePressed(row, col) {
-    if (this.state.topMessage.split(' ')[1] !== "Algorithm") return;
+    if (this.state.topMessage.split(' ')[1] !== "Algorithm" || this.state.changeFlag) return;
     if (!this.state.mouseIsPressed) return;
     let newGrid = [];
 
@@ -131,6 +152,7 @@ export default class Visualizer extends Component {
   }
 
   visualizeDijkstra() {
+
     this.setState({ topMessage: "Running Algo" });
     const { grid } = this.state;
 
@@ -144,6 +166,7 @@ export default class Visualizer extends Component {
   }
 
   visualizeBfs() {
+
     this.setState({ topMessage: "Running Algo" });
     const { grid } = this.state;
 
@@ -151,12 +174,13 @@ export default class Visualizer extends Component {
     const finishNode = grid[pos.finishRow][pos.finishCol];
 
     const visitedNodes = bfs(grid, startNode, finishNode);
-    const shortestPathNodes = getShortestPathNodesBFS(finishNode);
+    const shortestPathNodes = getShortestPathNodes(finishNode);
 
     this.animate(visitedNodes, shortestPathNodes);
   }
 
   visualizeBiDirectional() {
+
     this.setState({ topMessage: "Running Algo" });
     const { grid } = this.state;
 
@@ -171,17 +195,16 @@ export default class Visualizer extends Component {
   }
 
   visualizeBellmanFord() {
+
     this.setState({ topMessage: "Running Algo" });
     const { grid } = this.state;
 
     const startNode = grid[pos.startRow][pos.startCol];
     const finishNode = grid[pos.finishRow][pos.finishCol];
 
-    const { visitedNodes, distanceArray} = bellmanford(grid, startNode, pos.rowMax, pos.colMax);
-
-    const shortestPathNodes = getShortestPathNodesBF(finishNode);
-
-    this.animateBF(visitedNodes, {distanceArray, shortestPathNodes});
+    const { visitedNodes, timeTaken, shortestPathNodes} = bellmanford(grid, startNode, pos.rowMax, pos.colMax, finishNode);
+    
+    this.animateBF(visitedNodes, {timeTaken, shortestPathNodes});
   }
 
   animate(visitedNodes, shortestPathNodesMaybe) {
@@ -190,7 +213,8 @@ export default class Visualizer extends Component {
 
       if (i === visitedNodes.length) {
         setTimeout(() => {this.animateShortestPath(shortestPathNodesMaybe);}, 10 * i);
-        return; }
+        return;
+      }
 
       if (i === visitedNodes.length-1) continue;
 
@@ -274,7 +298,7 @@ export default class Visualizer extends Component {
 
     if(this.state.buttonText === "BFS Algorithm" || this.state.buttonText == "Bidirectional Algorithm") timeTaken = shortestPathNodes.length -1;
     if(this.state.buttonText === "Dijkstra Algorithm") timeTaken = shortestPathNodes[shortestPathNodes.length - 1].distance;
-    if(this.state.buttonText == "Bellman-Ford Algorithm") timeTaken = shortestPathNodesMaybe.distanceArray[shortestPathNodes[shortestPathNodes.length-1].row][shortestPathNodes[shortestPathNodes.length-1].col];
+    if(this.state.buttonText == "Bellman-Ford Algorithm") timeTaken = shortestPathNodesMaybe.timeTaken;
 
     this.setState({ distanceToBeTraveled: timeTaken });
   }
@@ -312,24 +336,39 @@ export default class Visualizer extends Component {
     const temp = this.state.changeWeight;this.setState({ changeWeight: !temp });
   };
 
+  toggleFlag = () => {
+    const temp = this.state.changeFlag;this.setState({ changeFlag: !temp });
+  };
+
   render() {
+
     const { grid,mouseIsPressed,topMessage,distanceToBeTraveled } = this.state;
 
     let mainButton = (
+
       <p className="startButton" onClick={() => this.checkAlgo()}>
         <FontAwesomeIcon icon={faCirclePlay}></FontAwesomeIcon> Start {topMessage}
       </p>
     );
 
+    let detailsBox = null;
+
     if (topMessage === "Shortest Path") {
+
+      detailsBox = (
+
+        <div>
+          <label htmlFor="text">
+            Time : {distanceToBeTraveled}</label>
+          <small><br />{this.state.buttonText.split(' ')[0] === "Dijkstra" || this.state.buttonText.split(' ')[0] === "Bellman-Ford" ? " [1 Block takes 1 unit of Time to travel and x units of Weight takes x units of more Time to travel] " : " [1 Block takes 1 unit of Time to travel] "}</small>
+        </div>
+      );
       
       mainButton = (
+
         <div class="resetButtonDiv">
           <h2 className="resetButton" href="#"
-            onClick={() => window.location.reload(false)} >
-            Reset <br /> Time : {distanceToBeTraveled}
-            <small>{this.state.buttonText.split(' ')[0] === "Dijkstra" || this.state.buttonText.split(' ')[0] === "Bellman-Ford" ? " [1 Block = 1 Time = 1 Weight]" : " [1 Block = 1 Time]"}</small>
-          </h2>
+            onClick={() => window.location.reload(false)} >Reset</h2>
         </div>
       );
     } else if (topMessage === "Running Algo") mainButton = <h3 className="running">Running...</h3>;
@@ -337,21 +376,52 @@ export default class Visualizer extends Component {
     let changeWeightText = "False";
     if (this.state.changeWeight) changeWeightText = "True";
 
+    let changeFlagText = "False";
+    if(this.state.changeFlag) changeFlagText = "True";
+
     let setWeightSection = null;
     
     if(changeWeightText === "True") {
+
       setWeightSection = (
-        <div>
+
+        <div class="setWeightContainer">
           <label htmlFor="quantity">Set Weight :</label>
           <input type="number" id="quantity" name="quantity" min="1" max="10"
-            onChange={this.weightChangeHandler} defaultValue="1"
-          />
+            onChange={this.weightChangeHandler} defaultValue="1" />
         </div>
       );
     }
 
     let centreBox = (
+
       <div className="centreBox">
+
+        <div className="startPoints">
+
+          <label htmlFor="point">Start Point :</label>
+
+          <input type="number" name="point" id="start_row" min="0" max={pos.rowMax - 1}
+            onChange={this.pointChangeHandler} defaultValue="0" />
+
+          <input type="number" name="point" id="start_col" min="0" max={pos.colMax - 1}
+            onChange={this.pointChangeHandler} defaultValue="0" />
+
+        </div>
+
+        <div className="endPoints">
+
+          <label htmlFor="point">End Point :</label>
+
+          <input type="number" name="point" id="end_row" min="0" max={pos.rowMax - 1}
+            onChange={this.pointChangeHandler} defaultValue={pos.rowMax - 1} />
+
+          <input type="number" name="point" id="end_col" min="0" max={pos.colMax - 1}
+            onChange={this.pointChangeHandler} defaultValue={pos.colMax - 1} />
+            
+        </div>
+
+        <hr></hr>
 
         <div className="weightSection">
 
@@ -362,58 +432,62 @@ export default class Visualizer extends Component {
           {setWeightSection}
         </div>
 
+        <hr></hr>
+
+          <div className="flagSection">
+
+            <label htmlFor="quantity">Toggle Flag :</label>
+            <button onClick={this.toggleFlag}>{changeFlagText}</button>
+          </div>
+
+        <hr></hr>
+
         <div className="algoChangeSection">
-          <label htmlFor="algo">Algorithm :</label>
+          <label htmlFor="algo">Algorithm's Available :</label>
 
-          <select name="algo" id="seeAlgo" onChange={() => this.algoChange()}>
+          <div class="setAlgoContainer">
+            <select name="algo" id="seeAlgo" onChange={() => this.algoChange()}>
 
-            <option value="Dijkstra Algorithm">Dijkstra Algorithm</option>
-            <option value="BFS Algorithm">BFS Algorithm</option>
-            <option value="Bidirectional Algorithm">Bidirectional Search</option>
-            <option value="Bellman-Ford Algorithm">Bellman-Ford Algorithm</option>
-          </select>
+              <option value="Dijkstra Algorithm">Dijkstra Algorithm</option>
+              <option value="BFS Algorithm">BFS Algorithm</option>
+              <option value="Bidirectional Algorithm">Bidirectional Search</option>
+              <option value="Bellman-Ford Algorithm">Bellman-Ford Algorithm</option>
+            </select>
+          </div>
         </div>
 
-        <div className="startPoints">
-          <label htmlFor="point">Start Point :</label>
-
-          <input type="number" name="point" id="start_row" min="0" max={pos.rowMax - 1}
-            onChange={this.pointChangeHandler} defaultValue="0" />
-
-          <input type="number" name="point" id="start_col" min="0" max={pos.colMax - 1}
-            onChange={this.pointChangeHandler} defaultValue="0" />
-        </div>
-
-        <div className="endPoints">
-          <label htmlFor="point">End Point :</label>
-
-          <input type="number" name="point" id="end_row" min="0" max={pos.rowMax - 1}
-            onChange={this.pointChangeHandler} defaultValue={pos.rowMax - 1} />
-
-          <input type="number" name="point" id="end_col" min="0" max={pos.colMax - 1}
-            onChange={this.pointChangeHandler} defaultValue={pos.colMax - 1} />
-        </div>
-
-        <div class="startButtonSection">
-          <button type="button" class="btn btn-success startButton">{mainButton}</button>
-        </div>
       </div>
     );
 
     if (topMessage === "Running Algo") centreBox = null;
-    else if (topMessage === "Shortest Path") centreBox = ( <div className="buttonContainer">{mainButton}</div> );
+    else if (topMessage === "Shortest Path") centreBox = ( <div className="detailsContainer">{detailsBox}</div> );
 
     return (
-      <div className="visualizerTopBox">
-        <div className="container">
-          <div className="heading"><h2> {"- - - " + topMessage + " - - -"} </h2></div>
+
+      <div className="visualizerBox">
+        <div className="container shadow-lg p-4 mb-5 rounded">
+          <div className="heading"> {topMessage} </div>
+          <hr></hr>
+
           {centreBox}
+          
+          <hr></hr>
+
+          <div class="startButtonSection">
+            <button type="button" class="btn btn-outline-success startButton">{mainButton}</button>
+          </div>
+
         </div>
 
-        <div className="visualGridContainer"><div className="gridBox">
+        <div className="visualGridContainer">
+
+          <div className="gridBox arrowClass">
+            
             <table className="grid" style={{ borderSpacing: "1" }}><tbody>{grid.map((row, rowIndex) => {
+                  
                   return (<tr key={rowIndex}>{row.map((node, nodeIndex) => {
-                        const { isStart, isFinish, isWall, isWeight } = node;
+                        const { isStart, isFinish, isWall, isWeight, isFlag } = node;
+                        
                         return (
                           <Node
                             row={rowIndex}
@@ -422,6 +496,7 @@ export default class Visualizer extends Component {
                             isStart={isStart}
                             isFinish={isFinish}
                             isWall={isWall}
+                            isFlag={isFlag}
                             isWeight={isWeight}
                             mouseIsPressed={mouseIsPressed}
 
@@ -429,4 +504,10 @@ export default class Visualizer extends Component {
                             onMouseEnter={(row, col) => this.handleMousePressed(row, col)}
                             onMouseUp={() => this.handleMouseUp()} />
                         );
-                      })}</tr>);})}</tbody></table></div></div></div>);}}
+                      })}</tr>);})}</tbody></table>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

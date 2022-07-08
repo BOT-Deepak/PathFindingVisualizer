@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+
 import "./Node.css";
 
 export default class Node extends Component {
 
   constructor(props) {
+
     super(props);
+    
     this.state = {};
   }
 
   render() {
-    const { row,col,isFinish,isStart,isWall,onMouseDown,onMouseEnter,onMouseUp,isWeight } = this.props;
+    
+    const { row,col,isFinish,isStart,isWall, isFlag, onMouseDown,onMouseEnter,onMouseUp,isWeight } = this.props;
 
     const extraClassName = isFinish
       ? "node-finish"
@@ -17,6 +21,8 @@ export default class Node extends Component {
       ? "node-start"
       : isWall
       ? "node-wall"
+      : isFlag
+      ? "node-flag"
       : isWeight
       ? "node-weight"
       : "";

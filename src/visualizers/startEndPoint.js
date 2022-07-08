@@ -1,8 +1,8 @@
 
 export function startEndPoint() {
 
-    let row_max_length = 17;
-    let col_max_length = 65;
+    let row_max_length = 20;
+    let col_max_length = 40;
 
     let START_NODE_ROW = 0;
     let START_NODE_COL = 0;

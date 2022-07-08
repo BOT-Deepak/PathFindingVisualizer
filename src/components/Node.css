@@ -1,9 +1,9 @@
 .node
 {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
 
-    border: 1px solid #52616B;
+    border: 1px solid #959fa5;
 }
 
 .node-start {
@@ -17,6 +17,10 @@
 .node-wall {
     border: 1px solid #F08A5D;
     background-color: #F08A5D;
+}
+
+.node-flag {
+    background-color: darkmagenta;
 }
 
 .node-weight {
@@ -35,25 +39,10 @@
 }
 
 @keyframes visitedAnimation {
-    0%
-    {
-        background-color: #DEFCF9;
-    }
-
-    50%
-    {
-        background-color: #CADEFC;
-    }
-
-    75%
-    {
-        background-color: #C3BEF0;
-    }
-
-    100%
-    {
-        background-color: #CCA8E9;
-    }
+    0% { background-color: #DEFCF9; }
+    50% { background-color: #CADEFC; }
+    75% { background-color: #C3BEF0; }
+    100% { background-color: #CCA8E9; }
 }
 
 .node-visitedWeight {
@@ -70,26 +59,10 @@
 
 @keyframes visitedWeightAnimation
 {
-    0%
-    {
-        background-color: #E3CDC1;
-    }
-
-    50%
-    {
-        background-color: #F6E6CB;
-    }
-
-    75%
-    {
-        background-color: #E7D4B5;
-    }
-
-    100%
-    {
-        opacity: .75;
-        background-color: #EABF9F;
-    }
+    0% { background-color: #E3CDC1; }
+    50% { background-color: #F6E6CB; }
+    75% { background-color: #E7D4B5; }
+    100% { opacity: .75; background-color: #EABF9F;}
 }
 
 .node-path
@@ -106,20 +79,9 @@
 }
 @keyframes shortestPathAnimation
 {
-    0%
-    {
-        background-color: #A1EAFB;
-    }
-
-    60%
-    {
-        background-color: #FFCEF3;
-    }
-
-    100%
-    {
-        background-color: #CABBE9;
-    }
+    0% { background-color: #A1EAFB; }
+    60% { background-color: #FFCEF3; }
+    100% { background-color: #CABBE9; }
 }
 
 .node-path-weight
@@ -137,19 +99,7 @@
 
 @keyframes shortestPathAnimationWeight
 {
-    0%
-    {
-        background-color: #EABF9F;
-    }
-
-    60%
-    {
-        background-color: #E7D4B5;
-    }
-
-    100%
-    {
-        opacity: .75;
-        background-color: #F5C6AA;
-    }
+    0% { background-color: #EABF9F; }
+    60% { background-color: #E7D4B5; }
+    100% { opacity: .75; background-color: #F5C6AA; }
 }

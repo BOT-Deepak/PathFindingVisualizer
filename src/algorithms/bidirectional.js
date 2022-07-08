@@ -1,7 +1,7 @@
 import Queue from "./queue";
-import 'jquery/dist/jquery.min.js'
+import { runBfs } from "./multiUseFunctions";
 
-export function bidirectional(grid, startNode, endNode) {
+export default function bidirectional(grid, startNode, endNode) {
     
     let start_visited = [];
     let end_visited = [];
@@ -19,8 +19,8 @@ export function bidirectional(grid, startNode, endNode) {
 
     while(!start_unvisited.isEmpty() && !end_unvisited.isEmpty()) {
 
-        const bfsSResult = bfsS(grid, start_unvisited, start_visited);
-        const bfsEResult = bfsE(grid, end_unvisited, end_visited);
+        const bfsSResult = runBfs(grid, start_unvisited, start_visited, 'S');
+        const bfsEResult = runBfs(grid, end_unvisited, end_visited, 'E');
 
         if(start_unvisited.peek().isVisitedS && start_unvisited.peek().isVisitedE) {
             intersectNode = start_unvisited.peek();
@@ -40,103 +40,4 @@ export function bidirectional(grid, startNode, endNode) {
     }
 
     return {sVisited: start_visited, eVisited: end_visited, intersectNode: intersectNode};
-}
-
-function bfsS(grid, unvisited, visited) {
-
-    const current = unvisited.dequeue();
-    visited.push(current);
-
-    const neighborNodes = getUnvisitedNeighborsforStart(current, grid);
-
-    for (const neighbor of neighborNodes) {
-        neighbor.previousNode = current;
-    }
-
-    neighborNodes.forEach( node => {
-        node.isVisitedS = true;
-        unvisited.enqueue(node);
-    });
-    
-    return { unvisited: unvisited, visited: visited};
-    
-}
-
-function bfsE(grid, unvisited, visited) {
-
-    const current = unvisited.dequeue();
-    visited.push(current);
-
-    const neighborNodes = getUnvisitedNeighborsforEnd(current, grid);
-
-    for (const neighbor of neighborNodes) {
-        neighbor.nextNode = current;
-    }
-
-    neighborNodes.forEach( node => {
-        node.isVisitedE = true;
-        unvisited.enqueue(node);
-    });
-
-    return { unvisited: unvisited, visited: visited};
-}
-
-function getUnvisitedNeighborsforStart(node, grid) {
-    const neighbors = [];
-    const { col, row } = node;
-  
-    if (row > 0) {
-        if(!grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
-    }
-    if (row < grid.length - 1) {
-        if(!grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
-    }
-    if (col > 0) {
-        if(!grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
-    }
-    if (col < grid[0].length - 1) {
-        if(!grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
-    }
-
-    return neighbors.filter((neighbor) => !neighbor.isVisitedS);
-}
-
-function getUnvisitedNeighborsforEnd(node, grid) {
-    const neighbors = [];
-    const { col, row } = node;
-  
-    if (row > 0) {
-        if(!grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
-    }
-    if (row < grid.length - 1) {
-        if(!grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
-    }
-    if (col > 0) {
-        if(!grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
-    }
-    if (col < grid[0].length - 1) {
-        if(!grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
-    }
-
-    return neighbors.filter((neighbor) => !neighbor.isVisitedE);
-}
-
-export function getShortestPathNodesBD(intersectNode) {
-
-    const nodesInShortestPathOrder = [];
-    let currentNode = intersectNode;
-  
-    while (currentNode !== null) {
-  
-      nodesInShortestPathOrder.unshift(currentNode);
-      currentNode = currentNode.previousNode;
-    }
-    currentNode = intersectNode.nextNode;
-
-    while(currentNode !== null) {
-        nodesInShortestPathOrder.push(currentNode);
-        currentNode = currentNode.nextNode;
-    }
-  
-    return nodesInShortestPathOrder;
 }

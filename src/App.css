@@ -1,16 +1,30 @@
-.App {
-  text-align: center;
+
+.nav-main {
+  margin-left: 40px;
+  margin-right: 50px;
+  margin-top: 20px;
 }
 
-.navbar {
-  margin: 10px 50px 10px;
-  background-color: #61C0BF;
-  border-radius: 10px;
+.path-body {
+  margin-left: 40px;
+  margin-right: 50px;
+  margin-top: 20px;
+}
+
+.back-image {
+  opacity: 0.9;
 }
 
 .webName {
   margin-left: 20px;
+  font-size: 1.6rem;
   font-family: "McLaren", cursive;
+  color:lightseagreen;
+}
+
+.webName:hover {
+  color: lightseagreen;
+  text-shadow: 100px;
 }
 
 .webBars {
@@ -21,4 +35,13 @@
 
 .bar {
   margin-right: 40px;
+}
+
+.nav-link {
+  color: floralwhite;
+}
+
+.nav-link:hover {
+  text-shadow: 100px;
+  color: floralwhite;
 }
