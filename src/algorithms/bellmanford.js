@@ -1,4 +1,9 @@
 
+import { sortNodesByDistance, getAllNeighbors, getUnvisitedNeighbors, getShortestPathNodes } from "./multiUseFunctions";
+
+const flagNodes = [];
+const nodesToTravel = [];
+
 export default function bellmanford(grid, startNode, rowMax, colMax, finishNode) {
 
     let distStore = new Array(rowMax);
@@ -8,16 +13,15 @@ export default function bellmanford(grid, startNode, rowMax, colMax, finishNode)
 
     const visited = [];
     const unvisited = [];
+
     unvisited.push(startNode);
+
     startNode.isVisitedS = true;
     startNode.distance = 0;
-
-    const flagNodes = [];
 
     while(unvisited.length) {
 
         sortNodesByDistance(unvisited);
-
         const current = unvisited.shift();
         visited.push(current);
 
@@ -54,33 +58,44 @@ export default function bellmanford(grid, startNode, rowMax, colMax, finishNode)
     }
 
     let shortestPathFromFlagsArray = [];
-    
-    shortestPathFromFlags(grid, startNode, finishNode, flagNodes, rowMax, colMax, shortestPathFromFlagsArray);
-    pathTraversalOrder.unshift(startNode);
 
-    linkThePath(grid, rowMax, colMax);
+    let distanceFlagNodes = new Array(flagNodes.length);
+    
+    shortestPathFromFlags(grid, startNode, finishNode, flagNodes, distanceFlagNodes, rowMax, colMax, shortestPathFromFlagsArray);
+
+    for(const nodes of pathTraversalOrder) {
+
+        for(const node of nodes) {
+
+            nodesToTravel.push(node);
+        }
+    }
+
+    nodesToTravel.push(finishNode);
     
     return { visitedNodes: visited, timeTaken: minSum, shortestPathNodes: nodesToTravel };
 }
 
-let minSum = Number.MAX_SAFE_INTEGER;
+let minSum = Number.MAX_SAFE_INTEGER; // 9
 let pathTraversalOrder = [];
+let nodesBetweenThese = [];
 
-function shortestPathFromFlags(grid, startNode, finishNode, flagNodes, rowMax, colMax, shortestPathFromFlagsArray) {
+function shortestPathFromFlags(grid, startNode, finishNode, flagNodes, distanceFlagNodes, rowMax, colMax, shortestPathFromFlagsArray) {
 
     if(shortestPathFromFlagsArray.length === flagNodes.length) {
 
         let sum = 0;
 
-        for(const flag of shortestPathFromFlagsArray) sum += flag.distance;
+        for(const dist of distanceFlagNodes) sum += dist;
 
         sum += shortDistance(grid, startNode, finishNode, rowMax, colMax);
 
         if(sum < minSum) {
             minSum = sum;
-            pathTraversalOrder = [...shortestPathFromFlagsArray];
-            pathTraversalOrder.push(finishNode);
+            pathTraversalOrder = [...nodesBetweenThese];
         }
+
+        nodesBetweenThese.pop();
 
         return;
     }
@@ -90,35 +105,39 @@ function shortestPathFromFlags(grid, startNode, finishNode, flagNodes, rowMax, c
         if(!flagNodes[idx].isVisitedF) {
 
             flagNodes[idx].isVisitedF = true;
-            const distance0 = flagNodes[idx];
-
-            flagNodes[idx].distance = shortDistance(grid, startNode, flagNodes[idx], rowMax, colMax);
-
             shortestPathFromFlagsArray.push(flagNodes[idx]);
 
-            shortestPathFromFlags(grid, flagNodes[idx], finishNode, flagNodes, rowMax, colMax, shortestPathFromFlagsArray);
-            
-            flagNodes[idx].distance = distance0;
+            distanceFlagNodes[idx] = shortDistance(grid, startNode, flagNodes[idx], rowMax, colMax);
+
+            shortestPathFromFlags(grid, flagNodes[idx], finishNode, flagNodes, distanceFlagNodes, rowMax, colMax, shortestPathFromFlagsArray);
+
             flagNodes[idx].isVisitedF = false;
-            shortestPathFromFlagsArray.splice(-1);
+            shortestPathFromFlagsArray.pop();
+            nodesBetweenThese.pop();
         }
     }
 }
 
 function shortDistance(grid, startNode, finishNode, rowMax, colMax) {
 
+    let nodesBetween = [];
+
     let checkStore = new Array(rowMax);
-    for(let i=0; i<rowMax; i++) checkStore[i] = new Array(colMax);
+    for(let i=0; i < rowMax; i++) checkStore[i] = new Array(colMax);
+
+    let distStore = new Array(rowMax);
+    for(let i=0; i < rowMax; i++) distStore[i] = new Array(colMax).fill(Number.MAX_SAFE_INTEGER);
 
     checkStore[startNode.row][startNode.col] = true;
+    distStore[startNode.row][startNode.col] = 0;
     
     startNode.distance = 0;
     const visited = [];
     const unvisited = [];
 
     unvisited.push(startNode);
-    startNode.distance = 0;
 
+    let distanceToReturn = 0;
 
     while(unvisited.length) {
 
@@ -127,129 +146,13 @@ function shortDistance(grid, startNode, finishNode, rowMax, colMax) {
         const current = unvisited.shift();
         visited.push(current);
 
-        if(current === finishNode) return current.distance;
-    
-        const update = updateUnvisitedNeighborsByMatrix(current, grid, checkStore);
-        checkStore = update.distanceArray;
-
-        update.neighbors.forEach( node => {
-            checkStore[node.row][node.col] = true;
-            unvisited.push(node);
-        });
-    }
-
-    return null;
-}
-
-function sortNodesByDistance(unvisitedNodes) {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
-
-function updateUnvisitedNeighbors(node, grid, distStore) {
-    const allNeighbors = getUnvisitedNeighbors(node, grid);
-
-    for (const neighbor of allNeighbors) {  
-        distStore[neighbor.row][neighbor.col] = distStore[node.row][node.col] + neighbor.weight + 1;
-        neighbor.distance = distStore[neighbor.row][neighbor.col];
-    }
-
-    return {neighbors: allNeighbors, distanceArray: distStore};
-}
-
-function updateUnvisitedNeighborsByMatrix(node, grid, checkStore) {
-    const allNeighbors = getAllNeighbors(node, grid);
-
-    const nonCheckedNeighbors = [];
-
-    for(const neighbor of allNeighbors) {
-        if(!checkStore[neighbor.row][neighbor.col]) nonCheckedNeighbors.push(neighbor);
-    }
-
-    for (const neighbor of nonCheckedNeighbors) { 
-        neighbor.distance = node.distance + neighbor.weight + 1;
-        checkStore[neighbor.row][neighbor.col] = true;
-    }
-
-    return {neighbors: nonCheckedNeighbors, distanceArray: checkStore};
-}
-
-function getUnvisitedNeighbors(node, grid) {
-    const neighbors = [];
-    const { col, row } = node;
-
-    if (row > 0) {
-        if(!grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
-    }
-    if (row < grid.length - 1) {
-        if(!grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
-    }
-    if (col > 0) {
-        if(!grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
-    }
-    if (col < grid[0].length - 1) {
-        if(!grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
-    }
-
-    return neighbors.filter((neighbor) => !neighbor.isVisitedS);
-}
-
-function getAllNeighbors(node, grid) {
-    const neighbors = [];
-    const { col, row } = node;
-
-    if (row > 0) {
-        if(!grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
-    }
-    if (row < grid.length - 1) {
-        if(!grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
-    }
-    if (col > 0) {
-        if(!grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
-    }
-    if (col < grid[0].length - 1) {
-        if(!grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
-    }
-
-    return neighbors;
-}
-
-function linkThePath(grid, rowMax, colMax) {
-    
-    for(let i = 0; i < pathTraversalOrder.length -1; i++) {
-
-        makeLinks(grid, pathTraversalOrder[i], pathTraversalOrder[i+1], rowMax, colMax);
-    }
-
-    nodesToTravel.push(pathTraversalOrder[pathTraversalOrder.length -1]);
-}
-
-const nodesToTravel = [];
-
-function makeLinks(grid, startNode, finishNode, rowMax, colMax) {
-
-    let nodesBetweenThese = [];
-
-    let checkStore = new Array(rowMax);
-    for(let i=0; i<rowMax; i++) checkStore[i] = new Array(colMax);
-
-    checkStore[startNode.row][startNode.col] = true;
-    
-    startNode.distance = 0;
-    const visited = [];
-    const unvisited = [];
-
-    unvisited.push(startNode);
-    startNode.distance = 0;
-
-    while(unvisited.length) {
-
-        sortNodesByDistance(unvisited);
-
-        const current = unvisited.shift();
-        visited.push(current);
-    
-        const update = updateUnvisitedNeighborsByMatrix(current, grid, checkStore);
-        checkStore = update.distanceArray;
+        if(current === finishNode) {
+            distanceToReturn = current.distance;
+            break;
+        }
+        const update = updateUnvisitedNeighborsByMatrix(current, grid, checkStore, distStore);
+        checkStore = update.checkArray;
+        distStore = update.distanceArray;
 
         update.neighbors.forEach( node => {
             checkStore[node.row][node.col] = true;
@@ -261,30 +164,69 @@ function makeLinks(grid, startNode, finishNode, rowMax, colMax) {
 
     while(currNode != null) {
 
-        const maybeNeighbors = getAllNeighbors(currNode, grid);
-        sortNodesByDistance(maybeNeighbors);
-
-        const maybePreNode = maybeNeighbors[0];
+        const maybePreNode = getTheLowestNode( grid, currNode, distStore );
 
         currNode = maybePreNode;
 
-        nodesBetweenThese.unshift(currNode);
+        nodesBetween.unshift(currNode);
 
         if(currNode === startNode) break;
     }
 
-    for(const node of nodesBetweenThese) nodesToTravel.push(node);
+    nodesBetweenThese.push(nodesBetween);
+
+    return distanceToReturn;
 }
 
-function getShortestPathNodes(lastNode) {
+function getTheLowestNode( grid, node, distStore ) {
 
-    const nodesInShortestPathOrder = [];
-    let currentNode = lastNode;
+    const neighborNodes = getAllNeighbors( node, grid );
     
-    while (currentNode !== null) {
-        nodesInShortestPathOrder.unshift(currentNode);
-        currentNode = currentNode.previousNode;
+    let lowDistance = Number.MAX_SAFE_INTEGER;
+    let minNode = null;
+
+    for( const neighbor of neighborNodes ) {
+
+        if( distStore[neighbor.row][neighbor.col] < lowDistance ) {
+
+            lowDistance = distStore[neighbor.row][neighbor.col];
+            minNode = neighbor;
+        }
     }
-  
-    return nodesInShortestPathOrder;
+
+    return minNode;
+}
+
+function updateUnvisitedNeighbors(node, grid, distStore) {
+
+    const allNeighbors = getUnvisitedNeighbors(node, grid, 'S');
+
+    for (const neighbor of allNeighbors) {  
+
+        distStore[neighbor.row][neighbor.col] = distStore[node.row][node.col] + neighbor.weight + 1;
+        neighbor.distance = distStore[neighbor.row][neighbor.col];
+    }
+
+    return {neighbors: allNeighbors, distanceArray: distStore};
+}
+
+function updateUnvisitedNeighborsByMatrix(node, grid, checkStore, distStore) {
+
+    const allNeighbors = getAllNeighbors(node, grid);
+
+    const nonCheckedNeighbors = [];
+
+    for(const neighbor of allNeighbors) {
+
+        if(!checkStore[neighbor.row][neighbor.col]) nonCheckedNeighbors.push(neighbor);
+    }
+
+    for (const neighbor of nonCheckedNeighbors) {
+
+        checkStore[neighbor.row][neighbor.col] = true;
+        neighbor.distance = node.distance + neighbor.weight + 1;
+        distStore[neighbor.row][neighbor.col] = neighbor.distance;
+    }
+
+    return { neighbors: nonCheckedNeighbors, distanceArray: distStore, checkArray: checkStore };
 }

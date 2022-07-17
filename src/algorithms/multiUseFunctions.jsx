@@ -8,7 +8,7 @@ export function runBfs(grid, unvisited, visited, char) {
     const current = unvisited.dequeue();
     visited.push(current);
 
-    const neighborNodes = [];
+    let neighborNodes = [];
 
     if(char === 'S') neighborNodes = getUnvisitedNeighbors(current, grid, 'S');
     else neighborNodes = getUnvisitedNeighbors(current, grid, 'E');
@@ -64,6 +64,26 @@ export function getAllNodes(grid) {
     }
 
     return nodes;
+}
+
+export function getAllNeighbors(node, grid) {
+    const neighbors = [];
+    const { col, row } = node;
+
+    if (row > 0) {
+        if(!grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
+    }
+    if (row < grid.length - 1) {
+        if(!grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
+    }
+    if (col > 0) {
+        if(!grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
+    }
+    if (col < grid[0].length - 1) {
+        if(!grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
+    }
+
+    return neighbors;
 }
 
 export function getShortestPathNodes(finishNode) {

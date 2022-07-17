@@ -1,0 +1,124 @@
+
+.content-high {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.content-low {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+.img {
+    width: 300px;
+    height: 300px;
+    margin-left: 160px;
+}
+
+.algo-choose-img {
+    animation-name: AlgoChooseAnimation;
+    animation-duration: 4s;
+    animation-play-state: running;
+    animation-delay: 0;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+}
+
+.start-end-img {
+    background-image: url(./images/startEnd.png);
+    background-repeat: no-repeat;
+}
+
+.toggle-weight-img {
+    animation-name: toggleWeightAnimation;
+    animation-duration: 4s;
+    animation-play-state: running;
+    animation-delay: 0;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+}
+
+.toggle-flag-img {
+    animation-name: toggleFlagAnimation;
+    animation-duration: 4s;
+    animation-play-state: running;
+    animation-delay: 0;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+}
+
+@keyframes AlgoChooseAnimation {
+    0%{ background-image: url(./images/algoChoose.png); background-repeat: no-repeat; }
+    50%{ background-image: url(./images/algoOptions.png); background-repeat: no-repeat; }
+    100% { background-image: url(./images/algoChoose.png); background-repeat: no-repeat; }
+}
+
+@keyframes toggleWeightAnimation {
+    0%{ background-image: url(./images/weightFalse.png); background-repeat: no-repeat; }
+    50%{ background-image: url(./images/weightTrue.png); background-repeat: no-repeat; }
+    100% { background-image: url(./images/weightFalse.png); background-repeat: no-repeat; }
+}
+
+@keyframes toggleFlagAnimation {
+    0%{ background-image: url(./images/flagFalse.png); background-repeat: no-repeat; }
+    50%{ background-image: url(./images/flagTrue.png); background-repeat: no-repeat; }
+    100% { background-image: url(./images/flagFalse.png); background-repeat: no-repeat; }
+}
+
+.instructions {
+    position: absolute;
+    width: 40%;
+    right: 0%;
+}
+
+.iconId { 
+    text-align: center;
+}
+
+.icons {
+    position: relative;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.icon-img {
+    position: relative;
+    left: 45%;
+    width: 70px;
+    height: 70px;
+}
+
+.icon-text {
+    position: relative;
+    font-size: 1.4rem;
+}
+
+.st-pt {
+    background-image: url(./images/runBro.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.wall {
+    background-image: url(./images/wall.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.wei {
+    background-image: url(./images/one.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.flag {
+    background-image: url(./images/friends.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.fin-pt {
+    background-image: url(./images/house.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}

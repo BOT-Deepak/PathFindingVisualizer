@@ -16,6 +16,7 @@ import { getShortestPathNodes, getShortestPathNodesBD } from "../algorithms/mult
 import bfs from "../algorithms/bfs";
 import bidirectional from "../algorithms/bidirectional";
 import bellmanford from "../algorithms/bellmanford";
+import aStarAlgo from "../algorithms/aStarAlgo";
 
 const pos = startEndPoint();
 
@@ -40,8 +41,9 @@ const createNode = (row, col) => {
     isStart: row === pos.startRow && col === pos.startCol,
     isFinish: row === pos.finishRow && col === pos.finishCol,
     distance: Infinity,
-    isVisitedS: false, isVisitedE: false, isVisitedF: false,
+    isVisitedS: false, isVisitedE: false, isVisitedF: false, f: 0,
     isWall: false, isWeight: false, previousNode: null, nextNode: null, weight: 0, isFlag: false,
+    isWeight1: false, isWeight2: false, isWeight3: false, isWeight4: false, isWeight5: false,
   };
 };
 
@@ -72,7 +74,39 @@ const getWeightedGrid = (grid, row, col, weight) => {
   const newGrid = [...grid]; 
   const node = newGrid[row][col];
   
-  const newNode = {...node, isWeight: !node.isWeight, weight: parseInt(weight),};
+  const newNode = {...node, isWeight: !node.isWeight, weight: parseInt(weight)};
+
+
+  switch (parseInt(weight))
+  {
+    case 1:
+      newNode.isWeight1 = true;
+      break;
+    case 2:
+      newNode.isWeight2 = true;
+      break;
+    case 3:
+      newNode.isWeight3 = true;
+      break;
+    case 4:
+      newNode.isWeight4 = true;
+      break;
+    case 5:
+      newNode.isWeight5 = true;
+      break;
+    default:
+      break;
+  }
+
+  if(!newNode.isWeight)
+  {
+    newNode.isWeight1 = false;
+    newNode.isWeight2 = false;
+    newNode.isWeight3 = false;
+    newNode.isWeight4 = false;
+    newNode.isWeight5 = false;
+  }
+
   newGrid[row][col] = newNode;
   
   return newGrid;
@@ -80,9 +114,9 @@ const getWeightedGrid = (grid, row, col, weight) => {
 
 export default class Visualizer extends Component {
 
-  constructor(props) {
+  constructor() {
 
-    super(props);
+    super();
 
     this.state = {
       grid: [], mouseIsPressed: false,
@@ -93,7 +127,8 @@ export default class Visualizer extends Component {
 
   algoChange = () => {
     const selectedText = $('#seeAlgo').val();
-    this.setState({ topMessage: selectedText, buttonText: selectedText });
+    const grid = getGridInitial();
+    this.setState({ topMessage: selectedText, buttonText: selectedText, grid });
   }
 
   componentDidMount() {
@@ -146,6 +181,9 @@ export default class Visualizer extends Component {
       case "Bellman-Ford":
         this.visualizeBellmanFord();
         break;
+      case "A-Star":
+        this.visualizeAStar();
+        break;
       default:
         break;
     }
@@ -189,6 +227,8 @@ export default class Visualizer extends Component {
 
     const param = bidirectional(grid, startNode, finishNode);
 
+    console.log(param.sVisited);
+
     const shortestPathNodes = getShortestPathNodesBD(param.intersectNode);
 
     this.animateBD(param.sVisited, param.eVisited, shortestPathNodes);
@@ -207,6 +247,21 @@ export default class Visualizer extends Component {
     this.animateBF(visitedNodes, {timeTaken, shortestPathNodes});
   }
 
+  visualizeAStar() {
+
+    this.setState({ topMessage: "Running Algo" });
+    const { grid } = this.state;
+
+    const startNode = grid[pos.startRow][pos.startCol];
+    const finishNode = grid[pos.finishRow][pos.finishCol];
+
+    const { visitedNodesE, timeTaken} = aStarAlgo(grid, startNode, pos.rowMax, pos.colMax, finishNode);
+
+    const shortestPathNodes = getShortestPathNodes(finishNode);
+
+    this.animateBF(visitedNodesE, {timeTaken, shortestPathNodes});
+  }
+  
   animate(visitedNodes, shortestPathNodesMaybe) {
 
     for (let i = 1; i <= visitedNodes.length; i++) {
@@ -285,20 +340,26 @@ export default class Visualizer extends Component {
     this.setState({ topMessage: "Shortest Path" });
 
     let shortestPathNodes = shortestPathNodesMaybe;
-    if(this.state.buttonText === "Bellman-Ford Algorithm") shortestPathNodes = shortestPathNodesMaybe.shortestPathNodes;
+    if(this.state.buttonText === "Bellman-Ford Algorithm" || this.state.buttonText === "A-Star Algorithm") shortestPathNodes = shortestPathNodesMaybe.shortestPathNodes;
 
     for (let i = 1; i < shortestPathNodes.length - 1; i++) {
 
       setTimeout(() => {
         const node = shortestPathNodes[i];
-        if (shortestPathNodes[i].isWeight) $(`#node-${node.row}-${node.col}`).removeClass("node-visitedWeight").addClass("node-path-weight");
+        if (shortestPathNodes[i].isWeight) {
+
+          const wei = shortestPathNodes[i].weight;
+          const weig = "node-path-" + wei;
+
+          $(`#node-${node.row}-${node.col}`).removeClass("node-visitedWeight").addClass(weig);
+        }
         else $(`#node-${node.row}-${node.col}`).removeClass("node-visited").addClass("node-path");
       }, 50 * i);
     }
 
     if(this.state.buttonText === "BFS Algorithm" || this.state.buttonText == "Bidirectional Algorithm") timeTaken = shortestPathNodes.length -1;
     if(this.state.buttonText === "Dijkstra Algorithm") timeTaken = shortestPathNodes[shortestPathNodes.length - 1].distance;
-    if(this.state.buttonText == "Bellman-Ford Algorithm") timeTaken = shortestPathNodesMaybe.timeTaken;
+    if(this.state.buttonText == "Bellman-Ford Algorithm" || this.state.buttonText === "A-Star Algorithm") timeTaken = shortestPathNodesMaybe.timeTaken;
 
     this.setState({ distanceToBeTraveled: timeTaken });
   }
@@ -342,7 +403,7 @@ export default class Visualizer extends Component {
 
   render() {
 
-    const { grid,mouseIsPressed,topMessage,distanceToBeTraveled } = this.state;
+    const { grid, mouseIsPressed, topMessage, distanceToBeTraveled } = this.state;
 
     let mainButton = (
 
@@ -350,6 +411,28 @@ export default class Visualizer extends Component {
         <FontAwesomeIcon icon={faCirclePlay}></FontAwesomeIcon> Start {topMessage}
       </p>
     );
+
+    if(topMessage.split(" ")[0] === "Bellman-Ford") {
+
+      mainButton = (
+
+        <p className="startButton" onClick={() => this.checkAlgo()}>
+          <FontAwesomeIcon icon={faCirclePlay}></FontAwesomeIcon> Start {topMessage}
+          <small> ( Not for -ve Weight Cycles in this grid ) </small>
+        </p>
+      );
+    }
+
+    if(topMessage.split(" ")[0] === "A-Star") {
+
+      mainButton = (
+
+        <p className="startButton" onClick={() => this.checkAlgo()}>
+          <FontAwesomeIcon icon={faCirclePlay}></FontAwesomeIcon> Start {topMessage}
+          <small> ( Fixed Heuristics ) </small>
+        </p>
+      );
+    }
 
     let detailsBox = null;
 
@@ -360,7 +443,7 @@ export default class Visualizer extends Component {
         <div>
           <label htmlFor="text">
             Time : {distanceToBeTraveled}</label>
-          <small><br />{this.state.buttonText.split(' ')[0] === "Dijkstra" || this.state.buttonText.split(' ')[0] === "Bellman-Ford" ? " [1 Block takes 1 unit of Time to travel and x units of Weight takes x units of more Time to travel] " : " [1 Block takes 1 unit of Time to travel] "}</small>
+          <small><br />{this.state.buttonText.split(' ')[0] === "Dijkstra" || this.state.buttonText.split(' ')[0] === "Bellman-Ford" || this.state.buttonText.split(' ')[0] === "A-Star" ? " [1 Block takes 1 unit of Time to travel and x units of Weight takes x units of more Time to travel] " : " [1 Block takes 1 unit of Time to travel] "}</small>
         </div>
       );
       
@@ -387,8 +470,39 @@ export default class Visualizer extends Component {
 
         <div class="setWeightContainer">
           <label htmlFor="quantity">Set Weight :</label>
-          <input type="number" id="quantity" name="quantity" min="1" max="10"
+          <input type="number" id="quantity" name="quantity" min="1" max="5"
             onChange={this.weightChangeHandler} defaultValue="1" />
+        </div>
+      );
+    }
+
+    let weightSection = null, flagSection = null;
+
+    if(topMessage.split(" ")[0] === "Dijkstra" || topMessage.split(" ")[0] === "Bellman-Ford" || topMessage.split(" ")[0] === "A-Star") {
+
+      weightSection = (
+        <div className="weightSection">
+
+          <label htmlFor="quantity">Toggle Weight :</label>
+          <button onClick={this.toggleWeight}>{changeWeightText}</button>
+          <br />
+
+          {setWeightSection}
+
+          <hr></hr>
+        </div>
+      );
+    }
+
+    if(topMessage.split(" ")[0] === "Bellman-Ford") {
+
+      flagSection = (
+        <div className="flagSection">
+
+          <label htmlFor="quantity">Toggle Flag :</label>
+          <button onClick={this.toggleFlag}>{changeFlagText}</button>
+
+          <hr></hr>
         </div>
       );
     }
@@ -423,24 +537,9 @@ export default class Visualizer extends Component {
 
         <hr></hr>
 
-        <div className="weightSection">
+        {weightSection}
 
-          <label htmlFor="quantity">Toggle Weight :</label>
-          <button onClick={this.toggleWeight}>{changeWeightText}</button>
-          <br />
-
-          {setWeightSection}
-        </div>
-
-        <hr></hr>
-
-          <div className="flagSection">
-
-            <label htmlFor="quantity">Toggle Flag :</label>
-            <button onClick={this.toggleFlag}>{changeFlagText}</button>
-          </div>
-
-        <hr></hr>
+        {flagSection}
 
         <div className="algoChangeSection">
           <label htmlFor="algo">Algorithm's Available :</label>
@@ -449,9 +548,10 @@ export default class Visualizer extends Component {
             <select name="algo" id="seeAlgo" onChange={() => this.algoChange()}>
 
               <option value="Dijkstra Algorithm">Dijkstra Algorithm</option>
-              <option value="BFS Algorithm">BFS Algorithm</option>
+              {/* <option value="BFS Algorithm">BFS Algorithm</option> */}
               <option value="Bidirectional Algorithm">Bidirectional Search</option>
               <option value="Bellman-Ford Algorithm">Bellman-Ford Algorithm</option>
+              <option value="A-Star Algorithm">A* Algorithm</option>
             </select>
           </div>
         </div>
@@ -483,10 +583,11 @@ export default class Visualizer extends Component {
 
           <div className="gridBox arrowClass">
             
-            <table className="grid" style={{ borderSpacing: "1" }}><tbody>{grid.map((row, rowIndex) => {
+            <table className="grid" style={{ borderSpacing: "1" }}>
+              <tbody>{grid.map((row, rowIndex) => {
                   
                   return (<tr key={rowIndex}>{row.map((node, nodeIndex) => {
-                        const { isStart, isFinish, isWall, isWeight, isFlag } = node;
+                        const { isStart, isFinish, isWall, isFlag, isWeight1, isWeight2, isWeight3, isWeight4, isWeight5 } = node;
                         
                         return (
                           <Node
@@ -497,7 +598,11 @@ export default class Visualizer extends Component {
                             isFinish={isFinish}
                             isWall={isWall}
                             isFlag={isFlag}
-                            isWeight={isWeight}
+                            isWeight1={isWeight1}
+                            isWeight2={isWeight2}
+                            isWeight3={isWeight3}
+                            isWeight4={isWeight4}
+                            isWeight5={isWeight5}
                             mouseIsPressed={mouseIsPressed}
 
                             onMouseDown={(row, col) => this.handleMouseDown(row, col)}

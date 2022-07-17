@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import reportWebVitals from './reportWebVitals';
-
 import 'jquery/dist/jquery.min.js'
 import $ from "jquery";
 import './index.css';
@@ -19,4 +17,3 @@ ReactDOM.render(
 
 $('body,html').css("overflow","hidden");
 
-reportWebVitals();

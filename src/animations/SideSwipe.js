@@ -9,8 +9,6 @@ export default function SideSwipe(props) {
 const animation = keyframes`
     0% { color: black }
     25% { color: floralwhite }
-    75% { opacity: floralwhite }
-    100% { opacity: black }
 `
 
 const Wrapper = styled.div`

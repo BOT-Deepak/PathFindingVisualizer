@@ -10,6 +10,7 @@ import "./App.css";
 
 import Home from "./Home";
 import Visualizer from "./visualizers/Visualizer";
+import Tutorial from "./Tutorial";
 
 export default class App extends React.Component {
 
@@ -23,7 +24,7 @@ export default class App extends React.Component {
 
           <nav class="navbar navbar-expand-lg">
 
-            <a class="navbar-brand webName" href="#"><FontAwesomeIcon icon={faRoute}></FontAwesomeIcon> Path Finding <br />Visualizer</a>
+            <a class="navbar-brand webName" href="#"><FontAwesomeIcon icon={faRoute}></FontAwesomeIcon> Shortest Path<br />Finding Visualizer</a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -79,9 +80,7 @@ function Main() {
 }
 
 function Tut() {
-  return (
-    <h2>Tutorial</h2>
-  );
+  return <Tutorial />;
 }
 
 function Path() {

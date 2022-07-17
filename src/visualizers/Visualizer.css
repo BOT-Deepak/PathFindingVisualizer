@@ -11,7 +11,6 @@ label {
 .visualizerBox .container {
     position: absolute;
     width: 20%;
-    margin-top: 30px;
 }
 
 .visualizerBox .container .heading {

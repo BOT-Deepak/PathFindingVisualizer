@@ -21,9 +21,7 @@ export default function bfs(grid, startNode, endNode) {
 
     const neighborNodes = getUnvisitedNeighbors(firstNode, grid, 'S');
 
-    for (const neighbor of neighborNodes) {
-      neighbor.previousNode = firstNode;
-    }
+    for (const neighbor of neighborNodes) neighbor.previousNode = firstNode;
 
     neighborNodes.forEach( node => {
       node.isVisitedS = true;

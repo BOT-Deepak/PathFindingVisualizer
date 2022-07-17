@@ -3,7 +3,6 @@ import { Carousel } from "react-bootstrap";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
-import 'jquery/dist/jquery.min.js'
 import "./Home.css";
 
 import MapImg from "./images/path_map.jpg";
@@ -23,7 +22,7 @@ export default class Home extends React.Component {
 
                 <div className='container-fluid'>
 
-                    <img src={MapImg} type="image" />
+                    <img className="map-img" src={MapImg} type="image" />
                     
                     <Carousel className="carousel-control" interval={7000} keyboard={false} pauseOnHover={true}>
     

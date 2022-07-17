@@ -6,100 +6,186 @@
     border: 1px solid #959fa5;
 }
 
-.node-start {
-    background-color: rgb(233, 30, 30);
-}
-
-.node-finish {
-    background-color: rgb(141, 243, 82);
-}
-
 .node-wall {
-    border: 1px solid #F08A5D;
-    background-color: #F08A5D;
+    background-image: url(../images/wall.jpg);
+    background-size: cover;
 }
 
 .node-flag {
-    background-color: darkmagenta;
+    background-image: url(../images/friends.png);
+    background-size: cover;
 }
 
-.node-weight {
-    background-color: #F67280;
+.node-weight-1 {
+    background-image: url(../images/one.png);
+    background-size: cover;
+}
+
+.node-weight-2 {
+    background-image: url(../images/two.png);
+    background-size: cover;
+}
+
+.node-weight-3 {
+    background-image: url(../images/three.png);
+    background-size: cover;
+}
+
+.node-weight-4 {
+    background-image: url(../images/four.png);
+    background-size: cover;
+}
+
+.node-weight-5 {
+    background-image: url(../images/five.png);
+    background-size: cover;
+}
+
+.node-start {
+    background-image: url(../images/runBro.png);
+    background-size: cover;
+}
+
+.node-finish {
+    background-image: url(../images/house.png);
+    background-size: cover;
 }
 
 .node-visited {
     animation-name: visitedAnimation;
-    animation-duration: 1.2s;
+    animation-duration: 1s;
     animation-play-state: running;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-iteration-count: 1;
     animation-direction: alternate;
     animation-fill-mode: forwards;
-}
-
-@keyframes visitedAnimation {
-    0% { background-color: #DEFCF9; }
-    50% { background-color: #CADEFC; }
-    75% { background-color: #C3BEF0; }
-    100% { background-color: #CCA8E9; }
 }
 
 .node-visitedWeight {
     animation-name: visitedWeightAnimation;
-    animation-duration: 1.5s;
+    animation-duration: 1s;
     animation-play-state: running;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-iteration-count: 1;
     animation-direction: alternate;
-
     animation-fill-mode: forwards;
-}
-
-@keyframes visitedWeightAnimation
-{
-    0% { background-color: #E3CDC1; }
-    50% { background-color: #F6E6CB; }
-    75% { background-color: #E7D4B5; }
-    100% { opacity: .75; background-color: #EABF9F;}
 }
 
 .node-path
 {
     animation-name: shortestPathAnimation;
-    animation-duration: 1.5s;
+    animation-duration: 1s;
     animation-play-state: running;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-iteration-count: 1;
     animation-direction: alternate;
-
     animation-fill-mode: forwards;
 }
+
+.node-path-1 {
+    animation-name: weight1Anim;
+    animation-duration: 1s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+.node-path-2 {
+    animation-name: weight2Anim;
+    animation-duration: 1s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+.node-path-3 {
+    animation-name: weight3Anim;
+    animation-duration: 1s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+.node-path-4 {
+    animation-name: weight4Anim;
+    animation-duration: 1s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+.node-path-5 {
+    animation-name: weight5Anim;
+    animation-duration: 1s;
+    animation-play-state: running;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}
+
+@keyframes weight1Anim {
+    0% { background-image: url(../images/oneV.png); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); background-image: url(../images/oneV.png); }
+}
+
+@keyframes weight2Anim {
+    0% { background-image: url(../images/twoV.png); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); background-image: url(../images/twoV.png); }
+}
+
+@keyframes weight3Anim {
+    0% { background-image: url(../images/threeV.png); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); background-image: url(../images/threeV.png); }
+}
+
+@keyframes weight4Anim {
+    0% { background-image: url(../images/fourV.png); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); background-image: url(../images/fourV.png); }
+}
+
+@keyframes weight5Anim {
+    0% { background-image: url(../images/fiveV.png); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); background-image: url(../images/fiveV.png); }
+}
+
+@keyframes visitedAnimation {
+    0% { background-color: #F5F0BB; }
+    25% { background-color: #C4DFAA; }
+    75% { background-color: #90C8AC; }
+    100% { background-color: #90C8AC; }
+}
+
+@keyframes visitedWeightAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
 @keyframes shortestPathAnimation
 {
-    0% { background-color: #A1EAFB; }
-    60% { background-color: #FFCEF3; }
-    100% { background-color: #CABBE9; }
-}
-
-.node-path-weight
-{
-    animation-name: shortestPathAnimationWeight;
-    animation-duration: 1.5s;
-    animation-play-state: running;
-    animation-timing-function: ease-out;
-    animation-delay: 0;
-    animation-iteration-count: 1;
-    animation-direction: alternate;
-
-    animation-fill-mode: forwards;
-}
-
-@keyframes shortestPathAnimationWeight
-{
-    0% { background-color: #EABF9F; }
-    60% { background-color: #E7D4B5; }
-    100% { opacity: .75; background-color: #F5C6AA; }
+    0% { background-color: yellowgreen; }
+    40% { background-image: url(../images/checkMark.jpg); background-size: cover; transform: scale(1.2);}
+    100% { background-image: url(../images/checkMark.jpg); background-size: cover; transform: scale(1); }
 }
